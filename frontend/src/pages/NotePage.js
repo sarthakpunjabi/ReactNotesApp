@@ -3,7 +3,7 @@ import { ReactComponent as ArrowLeft } from '../assets/chevron-left.svg'
 import { Link } from 'react-router-dom'
 
 
-const NotePage = ({match}) => {
+const NotePage = ({match,history}) => {
     let noteId = match.params.id 
     let [note,setNote] = useState(null)
     useEffect(()=>{
@@ -16,16 +16,29 @@ const NotePage = ({match}) => {
         setNote(data)
     }
 
+    let updateNote = async ()=>{
+        fetch(`/api/note/${noteId}/update/`,{
+            method:"PUT",
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(note)
+        })
+    }
+
+    let handleSubmit = () =>{
+        updateNote()
+        history.push('/')
+    }
+
     return (
         <div className="note">
             <div className="note-header">
                     <h3>
-                        <Link to="/">
-                            <ArrowLeft />
-                        </Link>
+                        <ArrowLeft onClick={handleSubmit} />
                     </h3>
             </div>
-            <textarea defaultValue={note?.body}></textarea>
+            <textarea onChange={(e)=>{setNote({...note,'body':e.target.value})}} defaultValue={note?.body}></textarea>
         </div>
     )
 }
