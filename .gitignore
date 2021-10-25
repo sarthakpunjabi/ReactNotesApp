@@ -1,3 +1,4 @@
 env1/
 frontend/node_modules/
+notesplace/secrets.py
 .DS_Store
