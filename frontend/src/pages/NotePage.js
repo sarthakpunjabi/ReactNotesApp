@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import { ReactComponent as ArrowLeft } from '../assets/chevron-left.svg'
 import { ReactComponent as Del } from '../assets/delete.svg'
-import { Link } from 'react-router-dom'
+
 
 
 const NotePage = ({match,history}) => {
@@ -12,6 +12,8 @@ const NotePage = ({match,history}) => {
     },[noteId])
 
     let getNote = async ()=>{
+        if (noteId === 'new') return
+
         let response = await fetch(`/api/note/${noteId}/`)
         let data = await response.json()
         setNote(data)
@@ -27,8 +29,24 @@ const NotePage = ({match,history}) => {
         })
     }
 
+    let createNote = async ()=>{
+        fetch(`/api/note/create/`,{
+            method:"POST",
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(note)
+        })
+    }
+
     let handleSubmit = () =>{
-        updateNote()
+        if(noteId!=='new' && note.body == null){
+            deleteNote()
+        }else if(noteId!=='new'){
+            updateNote()
+        }else if(noteId == 'new' && note.body!=null){
+            createNote()
+        }
         history.push('/')
     }
 
@@ -48,7 +66,12 @@ const NotePage = ({match,history}) => {
                     <h3>
                         <ArrowLeft onClick={handleSubmit} />
                     </h3>
-                    <Del onClick={deleteNote} />
+                    {noteId !== 'new' ?(
+                        <Del onClick={deleteNote} />
+                    ):(
+                        <button onClick={handleSubmit}>Done</button>
+                    )}
+                    
             </div>
             <textarea onChange={(e)=>{setNote({...note,'body':e.target.value})}} defaultValue={note?.body}></textarea>
         </div>
