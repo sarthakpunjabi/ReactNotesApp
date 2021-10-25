@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import { ReactComponent as ArrowLeft } from '../assets/chevron-left.svg'
+import { ReactComponent as Del } from '../assets/delete.svg'
 import { Link } from 'react-router-dom'
 
 
@@ -31,12 +32,23 @@ const NotePage = ({match,history}) => {
         history.push('/')
     }
 
+    let deleteNote = async ()=>{
+        fetch(`/api/note/${noteId}/delete/`,{
+            method:"DELETE",
+            headers:{
+                'Content-Type':'application/json'
+            }
+        })
+        history.push('/')
+    }
+
     return (
         <div className="note">
             <div className="note-header">
                     <h3>
                         <ArrowLeft onClick={handleSubmit} />
                     </h3>
+                    <Del onClick={deleteNote} />
             </div>
             <textarea onChange={(e)=>{setNote({...note,'body':e.target.value})}} defaultValue={note?.body}></textarea>
         </div>
