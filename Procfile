@@ -1,1 +1,1 @@
-web: gunicorn notespalace.wsgi
+web: gunicorn notespalace.wsgi --log-file -
